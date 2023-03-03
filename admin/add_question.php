@@ -1,20 +1,48 @@
 <?php
 include "include/header.php";
-?>
-  <form  method="POST" name="form1">
 
-  <div class="container justify content center">
-    <input type="submit" name="add" id="" value="Add Question "  class="btn btn-success"></div>
+//add questions
+if(isset($_POST["add"])){
+  $question=$_POST['question'];
+  $opt1=$_POST['opt1'];
+  $opt2=$_POST['opt2'];
+  $opt3=$_POST['opt3'];
+  $opt4=$_POST['opt4'];
+  $answer=$_POST['answer'];
+  $loop=0;
+  $count=0;
+  $res=mysqli_query($link,"SELECT *FROM questions WHERE category='$exam_category' order by id asc") or die(mysqli_error($link));
+  $count=mysqli_num_rows($res);
+  if ($count==0){
+    
+  }else{
+    while($row=mysqli_fetch_array($res))
+    {
+        $loop=$loop+1;
+        mysqli_query($link,"UPDATE questions SET questions_no='$loop' WHERE id=$row[id]");
+    }
+  }
+  $loop=$loop+1;
+  mysqli_query($link,"INSERT INTO questions(questions_no,question,opt1,opt2,opt3,opt4,answer,category)VALUES('$loop','$question','$opt1','$opt2','$opt3','$opt4','$answer','$exam_category')") or die(mysqli_error($link));
+}
+
+?>
+  <form  method="POST">
+
+  
+    <button type="submit" class="btn btn-success" name="add"> Add Questions</button>
    <div class="container">
    <div class="row gy-5">
     <div class="col-4">
       <div class="p-3">
           <label class="fw-bold"> Question</label>
-          <textarea type="text" name="question" id="" ></textarea>
           <input  class="insert" type="file" style="margin-bottom:20px;">
+          <textarea type="text" name="question" id="" ></textarea>
+         
           <label class="fw-bold"> Answer</label>
+          <input   class="insert" type="file" style="margin-bottom:20px; margin-top:20px;">
           <textarea type="text" name="answer" id=""></textarea>
-          <input   class="insert" type="file" style="margin-bottom:20px;">
+        
         
 
       </div>
@@ -23,11 +51,13 @@ include "include/header.php";
     <div class="col-4">
       <div class="p-3">
             <label class="fw-bold">Option 1</label>
+            <input  class="insert" type="file" style="margin-bottom:20px; ">
             <textarea type="text" name="opt1" id=""></textarea>
-            <input class="insert" type="file" style="margin-bottom:20px;">
+            
             <label class="fw-bold">Option 2</label>
+            <input  class="insert" type="file" style="margin-bottom:20px; margin-top:20px;">
             <textarea type="text" name="opt2" id=""></textarea>
-            <input type="file" style="margin-bottom:20px;">
+          
             
       </div>
     </div>
@@ -35,15 +65,18 @@ include "include/header.php";
     <div class="col-4">
       <div class="p-3">
             <label class="fw-bold">Option 3</label>
+            <input  class="insert" type="file" style="margin-bottom:20px;">
             <textarea type="text" name="opt3" id=""></textarea>
-            <input  class="insert" type="file" style="margin-bottom:20px;">
+            
             <label class="fw-bold">Option 4</label>
+            <input  class="insert" type="file" style="margin-bottom:20px; margin-top:20px;">
             <textarea type="text" name="opt4" id=""></textarea>
-            <input  class="insert" type="file" style="margin-bottom:20px;">
+            
       </div>
     </div>
     <!-- end of row 3 -->
    </div>
+</form>
 
         
             

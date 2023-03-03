@@ -1,94 +1,100 @@
 
 <?php
-  include "include/header.php";
-    include "../connection.php";
-  $id=$_GET["id"];
-  $exam_category='';
-  $res=mysqli_query($link,"SELECT * FROM exam_category WHERE id=$id");
-  while($row=mysqli_fetch_array($res))
-  {
-      $exam_category=$row["category"];
-  }
+include "include/header.php";
+include "connection.php";
 
-// password generator  
-  if (isset($_POST['gen'])) {
-    $result='';
-  if (isset($_POST['chkone'])) {
-    PassGenerator(6);
-
-  }elseif (isset($_POST['chktwo'])) {
-  PassGenerator(10);
-  }elseif (isset($_POST['chkthree'])){
-    PassGenerator(12);
-  }else{
-    PassGenerator(8);
-  }
-  }
-  function PassGenerator($lenght)
-  {
-    global $result;
-    $_ValidChar='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789';
-    while (0 <$lenght--){
-      $result.=$_ValidChar[random_int(0,strlen($_ValidChar)-1)];
-    }
-  }
-?>
-
-
-
-
-
-
-
-
-
-      <div class="container wrapper-box" >
-  <form class=""   method="POST" >
-  <button type="button" class="buts btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#add"><i class="fa-solid fa-user-plus"></i></button>
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#archive"><i class="fa-sharp fa-solid fa-box-archive"></i></button>
-    <div class=" generate d-flex flex-row" >
-    <div class=""><input class="form-control"type="text" name="result" value="<?php echo(@$result);?>" disabled placeholder="Copy Generated Code"></div>
-    <div class=""><button class="form-control btn btn-outline-success" type="submit" name="gen" value="Generate" class="generate btn-warning" ><i class="fa-sharp fa-solid fa-lock"></i></button></div>
-    </div>
-  </form>
-
-
-
-<!-- make another page for print view   -->
-
-
-<!-- start of archive -->
- 
-<?php
-  if (isset($_POST['archive'])) {
-    date_default_timezone_set("Etc/GMT+8");
-    $query = mysqli_query($link, "SELECT * FROM students WHERE category='$exam_category'");
-    $date = date("Y-m-d");
-    while($fetch = mysqli_fetch_array($query)){
-        mysqli_query($link, "INSERT INTO archive_code VALUES( '','$fetch[email]','$fetch[name]','$fetch[lrn]','$fetch[code]','$date','$fetch[category]')")or die(mysqli_error($link));
-        mysqli_query($link, "DELETE FROM students WHERE category = '$fetch[category]'") or die(mysqli_error($conn));	
-      ?>
-      <script>
-        Swal.fire({
-    position: 'top-end',
-    icon: 'success',
-    title: 'Your work has been saved',
-    showConfirmButton: false,
-    timer: 1500
-  })
-      </script>
-<?php	
-  }
-  }
-?>
+// add student
+if(isset($_POST["student"]))
+{
     
-  
-  <!-- end of archive  -->
+    $email= $_POST["email"];
+    $name= $_POST["name"];
+    $lrn= $_POST["lrn"];
+    $code= $_POST["code"];
+    
+    $res=mysqli_query($link,"SELECT * FROM students WHERE name='$name'");
+    $count=mysqli_num_rows($res);
+    if ($count == 1) {
+?>
+      <script>
+  Swal.fire({
+  position: 'center',
+  icon: 'warning',
+  title: 'Student already existed',
+  showConfirmButton: false,
+  timer: 2000
+})
+      </script>
+<?php
+    }else{
+      $sql = "INSERT INTO students(email,name,lrn,code,category)VALUES('$email','$name','$lrn','$code','$exam_category')";
+      $query = $link->query($sql) or die($link->error); 
+    }
+}
 
-  
 
+if (isset($_POST['gen'])) {
+  $result='';
+if (isset($_POST['chkone'])) {
+  PassGenerator(6);
+
+}elseif (isset($_POST['chktwo'])) {
+ PassGenerator(10);
+}elseif (isset($_POST['chkthree'])){
+  PassGenerator(12);
+}else{
+  PassGenerator(8);
+}
+
+
+}
+function PassGenerator($lenght)
+{
+  global $result;
+  $_ValidChar='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789';
+  while (0 <$lenght--) {
+      $result.=$_ValidChar[random_int(0,strlen($_ValidChar)-1)];
+  }
+}
+
+?>
+
+<div class="container-fluid">
+<div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-success icon" data-bs-toggle="modal" data-bs-target="#add">
+      <i class=" fa-solid fa-user-plus"></i>
+    </button>
+    <button type="button" class="icon btn btn-warning" data-bs-toggle="modal" data-bs-target="#archive">
+      <i class="fa-solid fa-box-archive"></i>
+    </button>
+    <a href="print_accounts.php?id=<?php echo $id ?>" class="btn btn-dark">
+      <i class="fa-solid fa-print"></i>
+    </a>
+
+
+
+
+
+<div class="modal fade" id="archive" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Warning!</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <form action="handler/b_arch_questions.php?id=<?php echo $id?>" method="POST">
+        <h3>Are you sure you want to save all data to the archive!</h3>
+      </div>
+      <div class="modal-footer">
+        
+        <button type="submit" class="btn btn-warning" name="archive"><i class="icon fa-solid fa-box-archive"></i>Confirm </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end -->
 
 <!-- Modal add account-->
 <div class="modal fade" id="add" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -126,58 +132,26 @@
     </div>
   </div>
 </div>
-<!-- end -->
-</div>
 
-<!-- archive Modal -->
-<div class="modal fade" id="archive" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Warning!</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-      <form metbhod="POST">
-      <h3>Are you sure you want to move all of the accounts to archive?</h3>
-      </div>
-      <div class="modal-footer">
-      <button type="submit" name="archive"  class="btn btn-outline-warning"><i class="fa-solid fa-box-archive"></i> Confirm</button>
-      </form>
-      </div>
+  
+ 
+    <form class=""   method="POST" >  
+    <div class="container px-4 text-center">
+  <div class="row ">
+        <div class="col-9">
+        <input class="form-control"type="text" name="result" value="<?php echo(@$result);?>" disabled placeholder="Copy Generated Code"></div>
+        
+    <div class="col">
+          <button class="form-control btn btn-outline-success" type="submit" name="gen" value="Generate" class="generate btn-warning" ><i class="fa-sharp fa-solid fa-lock"></i></button>        
     </div>
   </div>
 </div>
+ </form>
+</div>
 
-<?php 
-  if(isset($_POST["student"]))
-  {
-      
-      $email= $_POST["email"];
-      $name= $_POST["name"];
-      $lrn= $_POST["lrn"];
-      $code= $_POST["code"];
-      
-      $res=mysqli_query($link,"SELECT * FROM students WHERE name='$name'");
-      $count=mysqli_num_rows($res);
-      if ($count == 1) {
-  ?>
-        <script>
-    Swal.fire({
-    position: 'center',
-    icon: 'warning',
-    title: 'Student already existed',
-    showConfirmButton: false,
-    timer: 2000
-  })
-        </script>
-  <?php
-      }else{
-        $sql = "INSERT INTO students(email,name,lrn,code,category)VALUES('$email','$name','$lrn','$code','$exam_category')";
-        $query = $link->query($sql) or die($link->error); 
-      }
-  }
-  ?>
+
+</div>
+</div>
 <div class="container-fluid">
 <table class="table table-bordered text-center">
   <thead>

@@ -17,7 +17,9 @@
     <script src="https://cdn.ckeditor.com/4.20.0/full/ckeditor.js"></script>
 <!-- sweetalert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js"></script>
-  </head> 
+<link rel="stylesheet" href="design/print.css">  
+
+</head> 
 <body>
 <?php require '../connection.php'; 
       
@@ -58,7 +60,7 @@
               <i class="fa-solid fa-gear"></i> 
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="update_admin.php?id=<?php echo $row["id"];?>">Update Account</a></li>
+              <li><a class="dropdown-item" href="update_admin.php?id=<?php echo $id;?>">Update Account</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="logout.php">Log Out</a></li>
             </ul>
@@ -86,9 +88,14 @@
            Admin
         </div>
       </li>
-      <li class="mt-3">
+      <!-- <li class="mt-3">
         <a href="dashboard.php?id=<?php echo $id;?>" class="nav-link px-3 ">
           <span><i class="fa-solid fa-chart-simple" style="margin-right:20px;"></i>Dashboards</span>
+        </a>
+      </li> -->
+      <li class="mt-3">
+        <a href="email_results.php?id=<?php echo $id;?>" class="nav-link px-3 ">
+          <span><i class="icon fa-solid fa-envelope"></i>Send Email</span>
         </a>
       </li>
     
@@ -121,19 +128,19 @@
       <div class="card card-body bg-dark">
         <ul class="navbar-nav ">
           <li>
-            <a href="#" class="nav-link">
+            <a href="a_exam.php?id=<?php echo $id;?>" class="nav-link">
               <span><i class="fa-solid fa-file-circle-question" style="margin-right: 20px; margin-left: 40px;"></i></span>
               <span>Questions</span>
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link">
+            <a href="a_results.php?id=<?php echo $id;?>" class="nav-link">
               <span><i class="fa-solid fa-file-circle-question" style="margin-right: 20px; margin-left: 40px;"></i></span>
               <span>Results</span>
             </a>
           </li>
           <li>
-            <a href="../admin/archived/accounts.php?id=<?php echo $id;?>" class="nav-link">
+            <a href="a_accounts.php?id=<?php echo $id;?>" class="nav-link">
               <span><i class="fa-solid fa-file-circle-question" style="margin-right: 20px; margin-left: 40px;"></i></span>
               <span>Student Accounts</span>
             </a>

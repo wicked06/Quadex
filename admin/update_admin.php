@@ -1,7 +1,13 @@
 <?php
 include "include/header.php";
+$id=$_GET["id"];
+$exam_category='';
+$res=mysqli_query($link,"SELECT * FROM exam_category WHERE id=$id");
+while($row=mysqli_fetch_array($res))
+{
+    $exam_category=$row["category"];
+}
 ?>
-
 
  
 

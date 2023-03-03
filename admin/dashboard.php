@@ -6,7 +6,7 @@ include "include/header.php"
 <div class="row ">
   <div class="col-md-12">
     <div class="col-md-12 fw-bold fs-3">
-      Dashboard
+      <center><h1><?php echo $exam_category ?></h1></center>
     </div>
     <div class="container">
     <div class="row text-center">

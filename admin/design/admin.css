@@ -59,4 +59,13 @@
     margin-bottom:20px;
   }
 
+
+  .end
+  {
+    
+      display: flex;
+      justify-content: flex-start;
+  
+  }
+
   

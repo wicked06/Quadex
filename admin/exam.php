@@ -63,9 +63,11 @@ if (isset($_POST['archive'])) {
 <div class="container wrapper-box">
 <a href="add_question.php?id=<?php echo $id;?>" type="button"class="icon btn btn-success" ><i class="fa-solid fa-file-circle-plus"></i></a>
 <!-- Button trigger modal -->
-<button type="button" class="ex btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+<button type="button" class="icon btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
 <i class="fa-solid fa-box-archive"></i>
 </button>
+
+<button class="btn btn-dark">Print</button>
 
 
 </div>
