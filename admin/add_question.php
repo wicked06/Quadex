@@ -1,6 +1,15 @@
 <?php
 include "include/header.php";
 
+//id query
+$id=$_GET["id"];
+$exam_category='';
+$res=mysqli_query($link,"SELECT * FROM exam_category WHERE id=$id");
+while($row=mysqli_fetch_array($res))
+{
+    $exam_category= $row["category"];
+}
+
 //add questions
 if(isset($_POST["add"])){
   $question=$_POST['question'];
@@ -26,7 +35,21 @@ if(isset($_POST["add"])){
   mysqli_query($link,"INSERT INTO questions(questions_no,question,opt1,opt2,opt3,opt4,answer,category)VALUES('$loop','$question','$opt1','$opt2','$opt3','$opt4','$answer','$exam_category')") or die(mysqli_error($link));
 }
 
+
+//bulk archive query
+if (isset($_POST['archive'])) {
+  date_default_timezone_set("Etc/GMT+8");
+  $query = mysqli_query($link, "SELECT * FROM questions");
+  $date = date("Y-m-d");
+  while($fetch = mysqli_fetch_array($query)){
+          mysqli_query($link, "INSERT INTO archive_questions VALUES( '','$fetch[questions_no]','$fetch[question]','$fetch[opt1]','$fetch[opt2]','$fetch[opt3]','$fetch[opt4]','$fetch[answer]','$fetch[category]','$date')")or die(mysqli_error($link));
+          mysqli_query($link, "DELETE FROM questions WHERE category = '$fetch[category]'") or die(mysqli_error($conn));	
+  }
+
+
+}
 ?>
+
   <form  method="POST">
 
   

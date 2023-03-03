@@ -1,8 +1,18 @@
 <?php
 include "include/header.php";
 include "../connection.php";
-?>
 
+$id=$_GET["id"];
+$exam_category='';
+$res=mysqli_query($link,"SELECT * FROM exam_category WHERE id=$id");
+while($row=mysqli_fetch_array($res))
+{
+    $exam_category= $row["category"];
+}
+?>
+<div class="text-center">
+    <h1><?php echo $exam_category ?></h1>
+</div>
 <div class="container">
     <table class="table table-striped">
         <tr>
@@ -25,7 +35,7 @@ include "../connection.php";
 
     <?php
         
-        $res = mysqli_query($link,"SELECT * FROM archive_questions ");
+        $res = mysqli_query($link,"SELECT * FROM archive_questions WHERE category = '$exam_category'");
         while($row = mysqli_fetch_array($res)){
     ?>
         <tr>
