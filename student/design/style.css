@@ -1,0 +1,20 @@
+nav
+{
+    background-color: #820000;
+    color: wheat;
+}
+
+
+.timer
+{
+
+ justify-content: flex-end;
+ /* height: 30px;
+ width: 100px; */
+ /* background-color: #820000; */
+ align-items: center;
+ /* position: fixed; */
+ margin-top: 30px;
+ text-size-adjust: 20px;
+ 
+}

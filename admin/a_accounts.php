@@ -39,7 +39,7 @@ while($row=mysqli_fetch_array($res))
       <td><?php echo $row["code"];?></td>
       <td><?php echo $row["category"];?></td>
       <td><?php echo $row["date"];?></td>
-      <td><button class="btn btn-success"> Retrieve Account</button></td>
+      <td><button class="btn btn-success" id="<?= $row['id']?>"> Retrieve Account</button></td>
     </tr>
         
     

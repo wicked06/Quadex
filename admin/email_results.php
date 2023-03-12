@@ -6,8 +6,8 @@ include "include/header.php";
 <?php
    //Connection using PDO
    //PDO (PHP Data Objects) - provides data access abstraction layer, which means that, regardless of which database you're using you use the same functions to issue queries and fetch data.
-   $connect = new PDO("mysql:host=localhost; dbname=email_db", "root", "");
-   $query = "SELECT * FROM customer ORDER BY customer_id";
+   $connect = new PDO("mysql:host=localhost; dbname=quadex", "root", "");
+   $query = "SELECT * FROM students ORDER BY id";
    //prepare() - used to prepare an SQL statement for execution.
    $statement = $connect->prepare($query);
    //execute() - Returns TRUE on success or FALSE on failure.
@@ -24,10 +24,10 @@ include "include/header.php";
                     <!--START OF TABLE -->
                           <table class="table table-bordered table-striped">
                               <tr>
-                                  <th>Customer Name</th>
+                                  <th>Student Name</th>
                                   <th>Email</th>
-                                  <th>Select</th>
-                                  <th>Action</th>
+                                  <th>LRN</th>
+                                  <th>Code</th>
                               </tr>
 
                                <?php 
@@ -36,25 +36,18 @@ include "include/header.php";
                                        $count = $count + 1;
                                        echo '
                                           <tr>
-                                             <td>'.$row["customer_name"].'</td>
-                                             <td>'.$row["customer_email"].'</td>
+                                             <td>'.$row["name"].'</td>
+                                             <td>'.$row["email"].'</td>
+                                             <td>'.$row["code"].'</td>
+                                             <td>'.$row["lrn"].'</td>
                                              <td>
                                                 <input type="checkbox" 
                                                        class="single_select" 
                                                        name="single_select"
-                                                       data-email="'.$row["customer_email"].'"
-                                                       data-name="'.$row["customer_name"].'"/>
+                                                       data-email="'.$row["email"].'"
+                                                       data-name="'.$row["name"].'"/>
                                              </td>
-                                             <td>
-                                                <button type="button" 
-                                                        name="email_button" 
-                                                        class="btn btn-info btn-xs email_button"
-                                                        id="'.$count.'"
-                                                        data-email="'.$row["customer_email"].'"
-                                                        data-name="'.$row["customer_name"].'"
-                                                        data-action="single">Send Single
-                                                </button> 
-                                             </td>
+                                            
                                           </tr>
                                        ';
                                    }
@@ -62,12 +55,12 @@ include "include/header.php";
 
                                   <tr>
                                      <td colspan="3"></td>
-                                     <td><button type="button" 
+                                     <!-- <td><button type="button" 
                                                  name="bulk_email" 
                                                  class="btn btn-info email_button" 
                                                  id="bulk_email" 
                                                  data-action="bulk">Send Bulk
-                                         </button>
+                                         </button> -->
                                      </td>
                                   </tr>
                             </table>

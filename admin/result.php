@@ -1,9 +1,10 @@
 <?php
 require "../connection.php";
+include "include/header.php";
 ?>
 <!-- Content -->
 <?php
-    include "../connection.php";
+    
     $id=$_GET["id"];
     $exam_category='';
     $res=mysqli_query($link,"SELECT * FROM exam_category WHERE id=$id");
@@ -35,11 +36,14 @@ if (isset($_POST['archive'])) {
     <?php
 }
 ?>
-<div class="row" style="margin: 0px; padding:0px; margin-bottom: 50px; margin-top: 150px; margin-left:500px;">
-        <div class="col-lg-6 col-lg-push-3" style="min-height: 200px; ">
-        <form method="POST">
+
+    <div class="container">
+    <div class="d-flex justify-content-end" style="margin-bottom: 20px;">
+    <form method="POST">
     <input type="submit" name="archive" value="Save to Archive" class="btn btn-warning" style="color:#000; margin-top: 30px; margin-left: 20px; margin-bottom: 20px;">
 </form>
+    </div>
+ 
         <?php
         $count=0;
         $res=mysqli_query($link,"SELECT * FROM exam_results WHERE exam_type = '$exam_category'");
@@ -54,43 +58,68 @@ if (isset($_POST['archive'])) {
             <center><h1 style="margin-top:10px;">No Results Available</h1></center>
             <?php
         }else {
-            echo "<table class='table table-bordered' >";
-                echo "<tr style='background-color:#760a04; color:#f5e0c0;'>";
-                    echo"<th>"; echo "Name"; echo"</th>";
-                    echo"<th>"; echo "Exam"; echo"</th>";
-                    echo"<th>"; echo "Total Score"; echo"</th>";
-                    echo"<th>"; echo "Correct Answer"; echo"</th>";
-                    echo"<th>"; echo "Mistakes"; echo"</th>";
-                    echo"<th>"; echo "Time"; echo"</th>";
-                    ?>
-                    <th colspan="2"></th>
-                    <?php
-                echo "</tr>";
-            
+           ?>
+
+<table class="table table-bordered table-striped table-hovered table-light" id="results" style="margin-top:10px;">
+                    <thead>
+                       <tr>
+                          <th>Name</th>
+                          <th>Exam</th>
+                          <th>Total Score</th>
+                          <th>Correct Answer</th>
+                          <th>Mistakes</th>
+                          <th>Examinatin Date</th>
+                          
+                          <th colspan=""></th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                       <?php
+                            $conn = new mysqli('localhost','root','','quadex');
+                            $sql = "SELECT * FROM exam_results ";
+                            $res = $conn->query($sql) or die($conn->error);
+                            while($row=$res->fetch_assoc())
+                           {
+                       ?>
+                       <tr>
+                          <td>  <?= $row['name']?></td>
+                          <td> <?= $row['exam_type']?></td>
+                          <td> <?= $row['total_question']?></td>
+                          <td> <?= $row['correct_answer']?></td>
+                          <td> <?= $row['wrong_answer']?></td>
+                          <td> <?= $row['exam_time']?></td>
+                          
+                         
+               
+                         
+                          <td>
+                             <div class="d-flex justify-content-center">
+                              <button type="button" class="del_question btn btn-danger" id=<?=$row['id']?>><i class=" fa-solid fa-trash"></i></button>
+                             </div>
+                          </td>
+                       </tr>
+                       <?php
+                           }
+                       ?>
+                    </tbody>
+      </table>
+            <?php
             while($row=mysqli_fetch_array($res))
             {
-                echo "<tr style='background:#fff;'>";
-                echo"<td>"; echo $row["name"]; echo"</td>";
-                echo"<td>"; echo $row["exam_type"]; echo"</td>";
-                echo"<td>"; echo $row["total_question"]; echo"</td>";
-                echo"<td>"; echo $row["correct_answer"]; echo"</td>";
-                echo"<td>"; echo $row["wrong_answer"]; echo"</td>";
-                echo"<td>"; echo $row["exam_time"]; echo"</td>";
-                ?>
+              ?>
                 <td><button type="button" class="del_result btn btn-danger" id=<?=$row['id']?>>Delete</button></td>
-                <?php
-                echo "</tr>";
+<?php     
             }
         }
-
-        echo "</table>";
-        ?>
-        </div>
-
-        </div>
+?>
+       
+    </div>
 
         <script>
     $(document).ready(function(){
+//data
+        $('#results').DataTable();
+
         // Delete
         $(document).on('click','.del_result',function(){
             var id = $(this).attr('id');
@@ -132,5 +161,5 @@ if (isset($_POST['archive'])) {
 
 
     <?php
-    include "admin_footer.php";
+    include "include/footer.php";
     ?>

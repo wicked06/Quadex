@@ -176,8 +176,8 @@ session_start();
             <td><center><?php echo $row["category"];?></center></td>
             <td><center><?php echo $row["exam_time_in_minutes"];?>  Minutes</center></td>
             <td>
-              <a href="dashboard.php?id=<?php echo $row["id"];?>" type="button" class="btn btn-success border-dark"><i class="fa-solid fa-eye"></i></a> 
-              <a href="dashboard.php.php?id=<?php echo $row["id"];?>" type="button" class="btn btn-warning border-dark"><i class="fa-solid fa-pen-to-square"></i></a>
+              <a href="exam.php?id=<?php echo $row["id"];?>" type="button" class="btn btn-success border-dark"><i class="fa-solid fa-eye"></i></a> 
+              <a href="exam.php.php?id=<?php echo $row["id"];?>" type="button" class="btn btn-warning border-dark"><i class="fa-solid fa-pen-to-square"></i></a>
               <button type="button" class="del_category btn btn-danger border-dark" id=<?=$row['id']?>><i class="fa-solid fa-file-circle-xmark"></i></button>
             </td>  
         </tr>

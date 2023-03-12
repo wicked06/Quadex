@@ -29,7 +29,7 @@ require_once "connection.php";
           <form method="POST">
               <img src="img/sac.png">
               <h2 class="title">Admin</h2>
-              <a href="index.php"><i class="fa-solid fa-house"></i></a>
+              <!-- <a href="index.php"><i class="fa-solid fa-house"></i></a> -->
 
               
                   <div class="input-div one focus">

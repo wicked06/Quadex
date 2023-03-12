@@ -18,7 +18,15 @@
 <!-- sweetalert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js"></script>
 <link rel="stylesheet" href="design/print.css">  
-
+<!--Datatables-->
+<link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css"/>
+    <link type="text/css" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap5.min.css"/>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
 </head> 
 <body>
 <?php require '../connection.php'; 
@@ -48,24 +56,10 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         
-        <form class="d-flexp ms-auto" role="search" >
-          <div class="input-group ">
-            <button class="btn btn-outline-light" type="button" id="button-addon1"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-          </div>
-        </form>
-        <ul class="navbar-nav mb-2 mb-lg-0">
-          <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin-left: 20px;">
-              <i class="fa-solid fa-gear"></i> 
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="update_admin.php?id=<?php echo $id;?>">Update Account</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="logout.php">Log Out</a></li>
-            </ul>
-          </li>
-        </ul>
+       
+    
+          
+        
       </div>
     </div>
   </nav>
@@ -117,7 +111,11 @@
       <span class="me-2"><i class="fa-solid fa-user" style="margin-right:20px;"></i>Student Accounts</span>
     </a>
   </li>
-
+  <li>
+    <a href="result.php?id=<?php echo $id;?>" class="nav-link px-3">
+      <span class="me-2"><i class="icon fa-solid fa-square-poll-horizontal"></i>Student Results</span>
+    </a>
+  </li>
 
   <li class="my-4"> <hr></li>
   <li>
@@ -150,6 +148,32 @@
     </div>
   </li>
     </ul>
+
+
+    <li class="my-4 nav-link"> <hr></li>
+    
+
+    <div class="text-light small fw-bold  text-uppercase px-3 " style="margin-bttom:20px;">
+     Account Settings
+   </div>
+ </li>
+<ul class="navbar-nav">
+  
+<li class="nav-link">
+          <a class="nav-link" href="update_admin.php?id=<?php echo $id;?>">
+          <span><i class="fa-solid fa-user" style="margin-right: 20px;  margin-bottom:20px; margin-left: 20px;"></i></i></span>
+          <span>Update Admin Account</span>
+          </a>
+          </li>
+              
+
+              <li class="nav-link">
+                <a class="nav-link" href="logout.php">
+              <span><i class="fa-sharp fa-solid fa-right-from-bracket" style="margin-left: 20px; "></i></span>
+              <span>Logout</span>
+              </a></li>
+</ul>
+
       
    </nav>
    <!-- inside navbar 1 end -->

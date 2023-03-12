@@ -6,6 +6,7 @@ include "connection.php";
 // add student
 if(isset($_POST["student"]))
 {
+
     
     $email= $_POST["email"];
     $name= $_POST["name"];
@@ -57,8 +58,18 @@ function PassGenerator($lenght)
   }
 }
 
-?>
 
+if (isset($_POST['archive'])) {
+  date_default_timezone_set("Etc/GMT+8");
+$query = mysqli_query($link, "SELECT * FROM students WHERE category='$exam_category'");
+$date = date("Y-m-d");
+while($fetch = mysqli_fetch_array($query)){
+    mysqli_query($link, "INSERT INTO archive_code VALUES( '','$fetch[email]','$fetch[name]','$fetch[lrn]','$fetch[code]','$date','$fetch[category]')")or die(mysqli_error($link));
+    mysqli_query($link, "DELETE FROM students WHERE category = '$fetch[category]'") or die(mysqli_error($conn));	
+}
+}
+?>
+<center> <h3 class="fw-bold">  <?php echo $exam_category ?> Accounts</h3></center>
 <div class="container-fluid">
 <div class="d-flex justify-content-end">
     <button type="button" class="btn btn-success icon" data-bs-toggle="modal" data-bs-target="#add">
@@ -83,7 +94,7 @@ function PassGenerator($lenght)
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-         <form action="handler/b_arch_questions.php?id=<?php echo $id?>" method="POST">
+         <form method="POST">
         <h3>Are you sure you want to save all data to the archive!</h3>
       </div>
       <div class="modal-footer">
@@ -152,48 +163,64 @@ function PassGenerator($lenght)
 
 </div>
 </div>
-<div class="container-fluid">
-<table class="table table-bordered text-center">
-  <thead>
-    <tr style="background:#760a04; color:#f5e0c0;">
-      <th scope="col">Email</th>
-      <th scope="col">Name</th>
-      <th scope="col">LRN</th>
-      <th scope="col">Code</th>
-      <th scope="col">Category</th>
-      <th colspan="2"></th>
-    </tr>
-  </thead>
-  <tbody>
-  <?php
-             $res=mysqli_query($link,"SELECT * FROM students WHERE category='$exam_category' ORDER BY id asc");
-             while($row=mysqli_fetch_array($res))
-             {
-            ?>
-    <tr style="background:#fff; color:#333">
-      
-      <td>  <?= $row['email']?></td>
-      <td> <?= $row['name']?></td>
-      <td> <?= $row['lrn']?></td>
-      <td> <?= $row['code']?></td>
-      <td> <?= $row['category']?></td>
-      <td><center>
-      <a href="edit_student.php?id=<?php echo $row["id"];?>&id1=<?php echo $id;?>" type="button" class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-        <button type="button" class="del_code btn btn-danger" id=<?=$row['id']?>><i class="fa-solid fa-trash"></i></button>
-      </center></td>
-    </tr>
- 
-    <?php
-           }
-           ?>
-  </tbody>
-</table>
+
+
+<div class="container" style="margin-top:30px;">
+
+<table class="table table-bordered table-striped table-hovered table-light" id="student_data" >
+                    <thead>
+                       <tr>
+                          <th scope="col">Email</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">LRN</th>
+                          <th scope="col">Code</th>
+                          <th scope="col">Category</th>
+                          <th scope="col">Action</th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                       <?php
+                            $conn = new mysqli('localhost','root','','quadex');
+                            $sql = "SELECT * FROM students";
+                            $res = $conn->query($sql) or die($conn->error);
+                            while($row=$res->fetch_assoc())
+                           {
+                       ?>
+                       <tr>
+                          <td>  <?= $row['email']?></td>
+                          <td> <?= $row['name']?></td>
+                          <td> <?= $row['lrn']?></td>
+                          <td> <?= $row['code']?></td>
+                          <td> <?= $row['category']?></td>
+                         
+               
+                         
+                          <td>
+                             <div class="d-flex justify-content-center">
+                             <button type="button" class="icon btn btn-warning update_user" id= "<?= $row['id'] ?>" ><i class="fa-solid fa-pen-to-square"></i></button>
+
+                              <!-- <a href="edit_student.php?id=<?php echo $row["id"];?>&id1=<?php echo $id;?>" type="button" class="icon btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></a> -->
+                              <button type="button" class="del_code btn btn-danger" id=<?=$row['id']?>><i class=" fa-solid fa-trash"></i></button>
+                             </div>
+                          </td>
+                       </tr>
+                       <?php
+                           }
+                       ?>
+                    </tbody>
+                 </table>
 
 </div>
 
+
+
+<div id="display_user"></div>
+
 <script>
     $(document).ready(function(){
-        // Delete
+//datatables
+      $('#student_data').DataTable();
+// Delete
         $(document).on('click','.del_code',function(e){
             var id = $(this).attr('id');
             Swal.fire({
@@ -228,8 +255,22 @@ function PassGenerator($lenght)
 
     
 
-      
-      
+      // edit user
+      $(document).on('click','.update_user',function(){
+           var id = $(this).attr('id');
+          
+           $("#display_user").html('');
+           $.ajax({
+            url: 'view_student.php',
+            type: 'POST',
+            cache: false,
+            data: {id:id},
+            success:function(data){
+               $("#display_user").html(data);
+               $("#updateUserModal").modal('show');
+            }
+           })
+        });
     }); 
 </script>
 

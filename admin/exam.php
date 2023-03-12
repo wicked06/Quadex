@@ -2,8 +2,7 @@
   <?php
 include "../connection.php";
 include "include/header.php";
-?>
-<?php
+
     $id=$_GET["id"];
    
     $exam_category='';
@@ -12,37 +11,57 @@ include "include/header.php";
     {
         $exam_category=$row["category"];
     }
-?>
 
-<center> <h3> Exam Page <?php echo $exam_category ?></h3></center>
-<?php
-if(isset($_POST["submit1"])){
-    $question=$_POST['question'];
-    $opt1=$_POST['opt1'];
-    $opt2=$_POST['opt2'];
-    $opt3=$_POST['opt3'];
-    $opt4=$_POST['opt4'];
-    $answer=$_POST['answer'];
-    $loop=0;
-    $count=0;
-    $res=mysqli_query($link,"SELECT *FROM questions WHERE category='$exam_category' order by id asc") or die(mysqli_error($link));
-    $count=mysqli_num_rows($res);
-    if ($count==0){
-      
-    }else{
-      while($row=mysqli_fetch_array($res))
-      {
-          $loop=$loop+1;
-          mysqli_query($link,"UPDATE questions SET questions_no='$loop' WHERE id=$row[id]");
+//add questions
+    if(isset($_POST["add"])){
+        $question=$_POST['question'];
+        $opt1=$_POST['opt1'];
+        $opt2=$_POST['opt2'];
+        $opt3=$_POST['opt3'];
+        $opt4=$_POST['opt4'];
+        $answer=$_POST['answer'];
+        $loop=0;
+        $count=0;
+        $res=mysqli_query($link,"SELECT *FROM questions WHERE question='$question' ") or die(mysqli_error($link));
+        $count=mysqli_num_rows($res);
+        if ($count==1){
+            ?>
+            <script>
+                Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      title: 'questions already existing',
+      showConfirmButton: false,
+      timer: 1500
+    })
+            </script>
+           
+    <?php
+        }else{
+          while($row=mysqli_fetch_array($res))
+          {
+              $loop=$loop+1;
+              mysqli_query($link,"UPDATE questions SET questions_no='$loop' WHERE id=$row[id]");
+          }
+        }
+        $loop=$loop+1;
+        mysqli_query($link,"INSERT INTO questions(questions_no,question,opt1,opt2,opt3,opt4,answer,category)VALUES('$loop','$question','$opt1','$opt2','$opt3','$opt4','$answer','$exam_category')") or die(mysqli_error($link));
+        ?>
+        <script>
+            Swal.fire({
+  position: 'center',
+  icon: 'success',
+  title: 'questions added',
+  showConfirmButton: false,
+  timer: 1500
+})
+        </script>
+        <?php
       }
-    }
-    $loop=$loop+1;
-    mysqli_query($link,"INSERT INTO questions(questions_no,question,opt1,opt2,opt3,opt4,answer,category)VALUES('$loop','$question','$opt1','$opt2','$opt3','$opt4','$answer','$exam_category')") or die(mysqli_error($link));
-    echo"archive sucessfull";
-  }
-?>
-
+        ?>
 <?php
+//archive
+
 if (isset($_POST['archive'])) {
     date_default_timezone_set("Etc/GMT+8");
 	$query = mysqli_query($link, "SELECT * FROM questions WHERE category='$exam_category'");
@@ -54,81 +73,162 @@ if (isset($_POST['archive'])) {
 }
 ?>
 
+<center> <h3 class="fw-bold">  <?php echo $exam_category ?> Examination</h3></center>
 
 
-<div class="container">
 
 
 <!-- Content -->
-<div class="container wrapper-box">
-<a href="add_question.php?id=<?php echo $id;?>" type="button"class="icon btn btn-success" ><i class="fa-solid fa-file-circle-plus"></i></a>
-<!-- Button trigger modal -->
-<button type="button" class="icon btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-<i class="fa-solid fa-box-archive"></i>
+<!-- buttons -->
+<div class="container">
+    <div class="d-flex justify-content-end" style="margin-bottom: 20px;">
+
+
+
+    <button type="button" class="icon btn btn-success" data-bs-toggle="modal" data-bs-target="#add_question">
+    <i class="fa-solid fa-file-circle-plus"></i>
 </button>
 
-<button class="btn btn-dark">Print</button>
+
+    <!-- Full screen modal -->
 
 
+    <!-- Button trigger modal -->
+    
+    <button type="button" class="icon btn btn-warning" data-bs-toggle="modal" data-bs-target="#archive">
+    <i class="fa-solid fa-box-archive"></i>
+    </button>
+
+    <a href="p_exam.php?id=<?php echo $id ?>" class="btn btn-dark"><i class="fa-solid fa-print"></i></a>
+
+    </div>
 </div>
+
+
 
                     
 
-                    <table class="table table-bordered">
-                        <tr style="background:#760a04; color:#f5e0c0;">
-                            <th>Number</th>
-                            <th>Questions</th>
-                            <th>1st Choice</th>
-                            <th>2nd Choice</th>
-                            <th>3rd Choice</th>
-                            <th>4th Choice</th>
-                            <th>Answer</th>
-                            <th colspan="2"></th>
-                            
-                        </tr>
-                        
-                    <?php
-                    $res=mysqli_query($link,"SELECT * FROM questions WHERE category='$exam_category' ORDER BY questions_no asc");
-                    while($row=mysqli_fetch_array($res))
-                    {
-                    echo "<tr>";
-                    echo "<td>"; echo $row["questions_no"];   echo "</td>";
-                    echo "<td>"; echo $row["question"];   echo "</td>";
-                    echo "<td>"; echo $row["opt1"];   echo "</td>";
-                    echo "<td>"; echo $row["opt2"];   echo "</td>";
-                    echo "<td>"; echo $row["opt3"];   echo "</td>";
-                    echo "<td>"; echo $row["opt4"];   echo "</td>";
-                    echo "<td>"; echo $row["answer"];   echo "</td>";
-                    ?>
-                     <td>
-                     <a href="edit_questions.php?id=<?php echo $row["id"];?>&id1=<?php echo $id;?>" type="button" class="btn btn-warning">Edit</a>
-                    </td>
-                    
-                    <td><button type="button" id=<?=$row['id']?> class="del_question btn btn-danger">Delete</button></td>
-                    <?php
-                    echo "</tr>";
-                    }
-                    ?>
-        </table>
-</div>
+          
+
+  <div class="container">
+  <table class="table table-bordered table-striped table-hovered table-light" id="questions" style="margin-top:10px;">
+                    <thead>
+                       <tr>
+                       <th>Number</th>
+                          <th>Questions</th>
+                          <th>1st Choice</th>
+                          <th>2nd Choice</th>
+                          <th>3rd Choice</th>
+                          <th>4th Choice</th>
+                          <th>Answer</th>
+                          <th colspan=""></th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                       <?php
+                            $conn = new mysqli('localhost','root','','quadex');
+                            $sql = "SELECT * FROM questions";
+                            $res = $conn->query($sql) or die($conn->error);
+                            while($row=$res->fetch_assoc())
+                           {
+                       ?>
+                       <tr>
+                          <td>  <?= $row['questions_no']?></td>
+                          <td> <?= $row['question']?></td>
+                          <td> <?= $row['opt1']?></td>
+                          <td> <?= $row['opt2']?></td>
+                          <td> <?= $row['opt3']?></td>
+                          <td> <?= $row['opt4']?></td>
+                          <td> <?= $row['answer']?></td>
+                         
+               
+                         
+                          <td>
+                             <div class="d-flex justify-content-center">
+                              <a href="edit_exam.php?id=<?php echo $row["id"];?>&id1=<?php echo $id;?>" type="button" class="icon btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
+                              <button type="button" class="del_question btn btn-danger" id=<?=$row['id']?>><i class=" fa-solid fa-trash"></i></button>
+                             </div>
+                          </td>
+                       </tr>
+                       <?php
+                           }
+                       ?>
+                    </tbody>
+      </table>
+       
+  </div>
+
 
 <!-- modals -->
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<!-- Modal add questions-->
+<div class="modal fade" id="add_question" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Warning!</h1>
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Adding Questions</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <h3> Are you sure you want to save to archive questions ?</h3>
+      <form  method="POST">
 
-        <form action="achive_query.php" method="POST">
+  
+
+<div class="container">
+<div class="row gy-5">
+<div class="col-4">
+  <div class="p-3">
+      <label class="fw-bold"> Question</label>
+      <input  class="insert" type="file" style="margin-bottom:20px;">
+      <textarea type="text" name="question" id="" ></textarea>
+     
+      <label class="fw-bold">Option 2</label>
+        <input  class="insert" type="file" style="margin-bottom:20px; margin-top:20px;">
+        <textarea type="text" name="opt2" id=""></textarea>
+      
+    
+    
+
+  </div>
+</div>
+<!-- end of row 1 -->
+<div class="col-4">
+  <div class="p-3">
+  <label class="fw-bold"> Answer</label>
+      <input   class="insert" type="file" style="margin-bottom:20px; margin-top:20px;">
+      <textarea type="text" name="answer" id=""></textarea>
+
+      <label class="fw-bold">Option 3</label>
+        <input  class="insert" type="file" style="margin-bottom:20px;">
+        <textarea type="text" name="opt3" id=""></textarea> 
+
+       
+        
+   
+        
+  </div>
+</div>
+<!-- end of row 2 -->
+<div class="col-4">
+  <div class="p-3">
+  <label class="fw-bold">Option 1</label>
+        <input  class="insert" type="file" style="margin-bottom:20px; ">
+        <textarea type="text" name="opt1" id=""></textarea>
+    
+        
+        <label class="fw-bold">Option 4</label>
+        <input  class="insert" type="file" style="margin-bottom:20px; margin-top:20px;">
+        <textarea type="text" name="opt4" id=""></textarea>
+        
+  </div>
+</div>
+<!-- end of row 3 -->
+</div>
+
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-warning" name="archive">Save to Archive</button>
+        <button type="submit" class="btn btn-success" name="add"> Add Questions</button>
         </form>
       </div>
     </div>
@@ -139,6 +239,8 @@ if (isset($_POST['archive'])) {
 <!-- end Content -->
 <script>
     $(document).ready(function(){
+// datatables
+      $('#questions').DataTable();
         // Delete
         $(document).on('click','.del_question',function(){
             var id = $(this).attr('id');
@@ -174,6 +276,34 @@ if (isset($_POST['archive'])) {
 
       
     })
+
+//ck editor
+     CKEDITOR.replace( 'question',{
+                            removeButtons: 'Anchor,Source,Preview,Templates,Cut,Copy,Paste,PasteText,PasteCode,PasteFromWord,Undo,Redo,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Image,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,Strike,CopyFormatting,RemoveFormat,BulletedList,NumberedList,Outdent,Indent,CreateDiv,Blockquote,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,BidiLtr,BidiRtl,Link,Unlink,Styles,Format,Font,FontSize,spacingsliders,TextColor,BGColor,ShowBlocks,Maximize,About',
+                            
+                        } );
+    CKEDITOR.replace( 'opt1',{
+        removeButtons: 'Anchor,Source,Preview,Templates,Cut,Copy,Paste,PasteText,PasteCode,PasteFromWord,Undo,Redo,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Image,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,Strike,CopyFormatting,RemoveFormat,BulletedList,NumberedList,Outdent,Indent,CreateDiv,Blockquote,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,BidiLtr,BidiRtl,Link,Unlink,Styles,Format,Font,FontSize,spacingsliders,TextColor,BGColor,ShowBlocks,Maximize,About',
+        
+    } );
+
+    CKEDITOR.replace( 'opt2',{
+        removeButtons: 'Anchor,Source,Preview,Templates,Cut,Copy,Paste,PasteText,PasteCode,PasteFromWord,Undo,Redo,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Image,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,Strike,CopyFormatting,RemoveFormat,BulletedList,NumberedList,Outdent,Indent,CreateDiv,Blockquote,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,BidiLtr,BidiRtl,Link,Unlink,Styles,Format,Font,FontSize,spacingsliders,TextColor,BGColor,ShowBlocks,Maximize,About',
+        
+    } );
+    CKEDITOR.replace( 'opt3',{
+        removeButtons: 'Anchor,Source,Preview,Templates,Cut,Copy,Paste,PasteText,PasteCode,PasteFromWord,Undo,Redo,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Image,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,Strike,CopyFormatting,RemoveFormat,BulletedList,NumberedList,Outdent,Indent,CreateDiv,Blockquote,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,BidiLtr,BidiRtl,Link,Unlink,Styles,Format,Font,FontSize,spacingsliders,TextColor,BGColor,ShowBlocks,Maximize,About',
+        
+    } );
+    CKEDITOR.replace( 'opt4',{
+        removeButtons: 'Anchor,Source,Preview,Templates,Cut,Copy,Paste,PasteText,PasteCode,PasteFromWord,Undo,Redo,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Image,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,Strike,CopyFormatting,RemoveFormat,BulletedList,NumberedList,Outdent,Indent,CreateDiv,Blockquote,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,BidiLtr,BidiRtl,Link,Unlink,Styles,Format,Font,FontSize,spacingsliders,TextColor,BGColor,ShowBlocks,Maximize,About',
+        
+    } );
+    CKEDITOR.replace( 'answer',{
+        removeButtons: 'Anchor,Source,Preview,Templates,Cut,Copy,Paste,PasteText,PasteCode,PasteFromWord,Undo,Redo,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Image,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,Strike,CopyFormatting,RemoveFormat,BulletedList,NumberedList,Outdent,Indent,CreateDiv,Blockquote,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,BidiLtr,BidiRtl,Link,Unlink,Styles,Format,Font,FontSize,spacingsliders,TextColor,BGColor,ShowBlocks,Maximize,About',
+        
+    } );
+
 
 </script>
 <?php include "include/footer.php";?>
